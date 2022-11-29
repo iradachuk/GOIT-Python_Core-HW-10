@@ -17,7 +17,11 @@ class Record:
     def __init__(self, name):
         self.name = Name(name)
         self.phones = []
-        
+
+    def add_phone(self, phone):
+        self.phones.append(Phone(phone))
+        return self.phones
+
     def remove_phone(self, phone):
         for record_phone in self.phones:
             if record_phone.value == phone:
@@ -32,12 +36,11 @@ class Record:
 
 
 class AddressBook(UserDict):
-    def add_record(self, record: Record):
+    def add_record(self, record):
         self.data[record.name.value] = record
 
 
 address_book = AddressBook()
-
 
 def input_error(func):
     def inner(*args, **kwargs):
@@ -64,18 +67,22 @@ def good_bye(*args):
 def add_contact(*args):
     name = Name(args[0])
     phone = Phone(args[1])
-    record = Record(name)
+    record = Record(name.value)
+    record.add_phone(phone)
+    print(record.add_phone(phone))
     address_book.add_record(record)
+    for key, value in address_book.items():
+        print(f'{key} - {value}')
     return f'The user with name {name.value} and phone {phone.value} was added!'
-
+    
 
 @input_error
 def change_phone(*args):
     name = Name(args[0])
     phone = Phone(args[1])
-    record = address_book[name]
+    record = address_book[name.value]
     record.change_phone(phone)
-    return f'The phone number for name {name.value} was changed!'
+    return f'The phone number for name {name} was changed!'
 
 
 @input_error
